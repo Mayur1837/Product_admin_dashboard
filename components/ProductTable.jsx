@@ -1,5 +1,28 @@
-import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+function ProductImage({ src, alt = "", className }) {
+  const [failed, setFailed] = useState(false);
+
+  if (!src || failed) {
+    return (
+      <div
+        className={`${className} flex items-center justify-center bg-slate-100 text-xs text-slate-400`}
+      >
+        No image
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
 export function ProductTable({ products, onDelete }) {
   return (
     <div className="overflow-hidden rounded-lg border bg-white">
@@ -23,12 +46,12 @@ export function ProductTable({ products, onDelete }) {
                   href={`/products/${p.id}`}
                   className="flex items-center gap-3 hover:underline"
                 >
-                  <Image
+                  <ProductImage
                     src={p.thumbnail}
-                    alt=""
-                    width={48}
-                    height={48}
-                    className="h-12 w-12 rounded object-cover"
+                    alt={p.title}
+                    width={72}
+                    height={72}
+                    className="h-[72px] w-[72px] rounded object-cover"
                   />
                   <span className="font-medium">{p.title}</span>
                 </Link>
@@ -56,11 +79,9 @@ export function ProductTable({ products, onDelete }) {
         {products.map((p) => (
           <article key={p.id} className="rounded-lg border p-3">
             <Link href={`/products/${p.id}`} className="flex gap-3">
-              <Image
+              <ProductImage
                 src={p.thumbnail}
-                alt=""
-                width={72}
-                height={72}
+                alt={p.title}
                 className="h-[72px] w-[72px] rounded object-cover"
               />
               <div>

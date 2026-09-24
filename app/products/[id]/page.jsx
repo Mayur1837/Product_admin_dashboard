@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -8,6 +7,30 @@ import { getApiError } from "../../../lib/api";
 import { getLocalProduct } from "../../../lib/localProducts";
 import { Spinner } from "../../../components/Spinner";
 import { ErrorState } from "../../../components/ErrorState";
+
+function ProductImage({ src, alt = "", className }) {
+  const [failed, setFailed] = useState(false);
+
+  if (!src || failed) {
+    return (
+      <div
+        className={`${className} flex items-center justify-center bg-slate-100 text-slate-400`}
+      >
+        No image available
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
 export default function Detail() {
   const { id: raw } = useParams(),
     router = useRouter(),
@@ -73,7 +96,7 @@ export default function Detail() {
       </div>
       <div className="grid gap-6 rounded border bg-white p-6 md:grid-cols-2">
         <div>
-          <Image
+          <ProductImage
             src={product.images?.[0] || product.thumbnail}
             alt={product.title}
             width={700}
@@ -82,7 +105,7 @@ export default function Detail() {
           />
           <div className="mt-3 grid grid-cols-4 gap-2">
             {(product.images || [product.thumbnail]).slice(0, 4).map((img) => (
-              <Image
+              <ProductImage
                 key={img}
                 src={img}
                 alt=""
